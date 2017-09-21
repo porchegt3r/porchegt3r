@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="jointest">
+	<typeAlias alias="empDTO" type="jointest.EmpDTO"/>
+	<typeAlias alias="ebDTO" type="jointest.Emp_bodyDTO"/>
+	<typeAlias alias="deptDTO" type="jointest.DeptDTO"/>
+    
+    <resultMap class="empDTO" id="oneMap">
+    	<result property="empno" column="empno"/>
+    	<result property="name" column="name"/>
+    	<result property="phone" column="phone"/>
+    	<result property="email" column="email"/>
+    	<result property="regdate" column="regdate"/>
+    	<result property="zipcode" column="zipcode"/>
+    	<result property="address" column="address"/>
+    	<result property="deptno" column="deptno"/>
+    	<result property="ebdto.empno" column="empno2"/>
+    	<result property="ebdto.weight" column="weight"/>
+    	<result property="ebdto.height" column="height"/>
+    	<result property="ebdto.blood" column="blood"/>
+    </resultMap>
+    <select id="oneToOne" parameterClass="int" resultMap="oneMap">
+	    select e.empno, e.name, e.phone, e.email, e.regdate, e.zipcode, e.address,
+		e.deptno, b.empno as empno2, b.weight, b.height, b.blood
+		from emp e, emp_body b
+		where e.empno = b.empno
+		and e.empno=#empno#  
+    </select>
+    <select id="oneToOneList" resultMap="oneMap">
+	    select e.empno, e.name, e.phone, e.email, e.regdate, e.zipcode, e.address,
+		e.deptno, b.empno as empno2, b.weight, b.height, b.blood
+		from emp e, emp_body b
+		where e.empno = b.empno    	
+    </select>
+   	<resultMap class="deptDTO" id="manyMap">
+   		<result property="deptno" column="deptno"/>
+   		<result property="deptname" column="deptname"/>
+   		<result property="empdtoList" column="deptno" 
+   				select="jointest.oneToManyEmp"/>
+   		
+   	</resultMap>
+    <select id="oneToMany" parameterClass="int" resultMap="manyMap">
+    	select deptno, deptname
+    	from dept
+    	where deptno=#deptno# 
+    </select> 
+   	<select id="oneToManyEmp" parameterClass="int" resultClass="empDTO">
+   		select * from emp
+   		where deptno=#deptno#
+   	</select>
+    
+   
+   
+   
+   
+   
+   
+        
+</sqlMap>
+
